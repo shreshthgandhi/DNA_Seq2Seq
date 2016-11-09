@@ -43,24 +43,33 @@ def DNA_read(data_size=10000, seq_length=10, vocab_size=4):
     data_size_quarter = data_size // 4
     data_size = data_size_quarter * 4
     x = []
+    y = []
     for step in range(data_size):
         idx = step * vocab_size // (data_size)
         length = np.random.random_integers(seq_length // 2, seq_length)
-        entry = np.full([length],idx, dtype=np.int64)
+        entry = np.ones([length], dtype=np.int64) * idx
         x.append(entry)
-    np.random.shuffle(x)
-    return x
+        y.append(idx)
+    # np.random.shuffle(x)
+    p = np.random.permutation(len(x))
+    x = [x[i] for i in p]
+    y = [y[i] for i in p]
+    return x,y
 
 def DNA_producer(raw_data, config, name=None):
     batch_size = config.batch_size
     num_steps_encoder = config.num_steps_encoder
     num_steps_decoder = config.num_steps_decoder
     vocab_size = config.vocab_size
+    labels = raw_data[1]
+    raw_data = raw_data[0]
 
     with tf.name_scope(name, "DNA_Producer"):
         data_size = len(raw_data)
         num_batches = data_size // batch_size
         data = raw_data[0: batch_size*num_batches]
+        labels = labels[0: batch_size*num_batches]
+        labels = tf.convert_to_tensor(labels, name="encoder_labels", dtype=tf.int64)
         # vocab_size -1 is 7 in our case and means PAD symbol
         encoder_input_full = np.full([data_size, num_steps_encoder], vocab_size-1)
         decoder_input_full = np.full([data_size, num_steps_decoder], vocab_size-1)
@@ -82,4 +91,5 @@ def DNA_producer(raw_data, config, name=None):
         encoder_input = tf.slice(encoder_input_full, [i * batch_size, 0 ],[batch_size,num_steps_encoder])
         decoder_input = tf.slice(decoder_input_full, [i * batch_size, 0 ],[batch_size,num_steps_decoder])
         decoder_targets = tf.slice(decoder_targets_full, [i * batch_size, 0 ],[batch_size,num_steps_decoder])
-    return encoder_input, decoder_input, decoder_targets
+        encoder_labels = tf.slice(labels, [i*batch_size],[batch_size])
+    return encoder_input, decoder_input, decoder_targets, encoder_labels
