@@ -71,9 +71,9 @@ def DNA_producer(raw_data, config, name=None):
         labels = labels[0: batch_size*num_batches]
         labels = tf.convert_to_tensor(labels, name="encoder_labels", dtype=tf.int64)
         # vocab_size -1 is 7 in our case and means PAD symbol
-        encoder_input_full = np.full([data_size, num_steps_encoder], vocab_size-1)
-        decoder_input_full = np.full([data_size, num_steps_decoder], vocab_size-1)
-        decoder_targets_full = np.full([data_size, num_steps_decoder], vocab_size-1)
+        encoder_input_full = np.ones([data_size, num_steps_encoder]) *(vocab_size-1)
+        decoder_input_full = np.ones([data_size, num_steps_decoder]) *(vocab_size-1)
+        decoder_targets_full = np.ones([data_size, num_steps_decoder]) *(vocab_size-1)
         for (i, seq) in enumerate(data):
             length = seq.shape[0]
             encoder_input_full[i, 0:length] = seq
