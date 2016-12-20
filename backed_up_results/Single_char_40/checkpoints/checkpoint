@@ -1,0 +1,6 @@
+model_checkpoint_path: "DNAseq2seq.model-6000"
+all_model_checkpoint_paths: "DNAseq2seq.model-2000"
+all_model_checkpoint_paths: "DNAseq2seq.model-3000"
+all_model_checkpoint_paths: "DNAseq2seq.model-4000"
+all_model_checkpoint_paths: "DNAseq2seq.model-5000"
+all_model_checkpoint_paths: "DNAseq2seq.model-6000"

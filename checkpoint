@@ -1,3 +1,0 @@
-model_checkpoint_path: "test2-5000"
-all_model_checkpoint_paths: "test2/model.ckpt-0"
-all_model_checkpoint_paths: "test2-5000"
